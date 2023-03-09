@@ -9,7 +9,7 @@ function Main({route, navigation}){
     const uid = route.params.uid;
 
     useEffect(() => {
-        fetch(constant.BASEURL + '/cards', {
+        fetch(constant.BASEURL + '/cards', { // from constant.js. Then load server URL for requesting API.
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
