@@ -31,7 +31,8 @@ function Login ({navigation}) {
   const [idText, onChangeIdText] = React.useState('');
   const [pwText, onChangePwText] = React.useState('');
 
-  const submitClick = () =>{
+  const submitClick = () => {
+    console.log("Sending signup request");
     fetch(constant.BASEURL + 'join/signup', {
       method: 'POST',
       headers: {
@@ -44,13 +45,19 @@ function Login ({navigation}) {
       })
     })
     .then((response) => {
+      // console.log("response");
+      console.log(response);
       if(response.status == 200){
-        navigation.navigate('Main', {uid: 1});
         console.log("Go Next Page");
+        navigation.navigate('Main', {uid: 1});
+        return response.json();
       }  
       else{
         console.log(response.status);
       }
+    })
+    .then((data) => {
+      console.log(data);
     })
     .catch((error) => {
       console.error(error);
