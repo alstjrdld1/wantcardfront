@@ -10,23 +10,22 @@ import {
 
 function Card({cardWidth}) {
   const isDarkMode = useColorScheme() === 'dark';
-  const currentTheme = isDarkMode ? theme.darkTheme : theme.lightTheme;
-
-  // styles begin
-  const styles = StyleSheet.create({
-    card: {
-      backgroundColor: '#cce1ff',
-      width: cardWidth,
-      height: cardWidth * 0.625,
-      borderRadius: cardWidth * 0.05,
-    },
-  });
-  // styles end
+  const nTheme = isDarkMode ? theme.darkTheme : theme.lightTheme;
+  const nStyles = createStyles(nTheme, cardWidth);
 
   return (
-    <View style={styles.card}>
+    <View style={nStyles.card}>
     </View>
   );
 }
+
+const createStyles = (nTheme, cardWidth) => StyleSheet.create({
+  card: {
+    backgroundColor: nTheme.cardColor,
+    width: cardWidth,
+    height: cardWidth * 0.625,
+    borderRadius: cardWidth * 0.05,
+  },
+});
 
 export default Card;
