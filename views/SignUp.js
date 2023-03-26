@@ -36,6 +36,8 @@ function SignUp({navigation}) {
   const [idText, onChangeIdText] = React.useState('');
   const [pwText, onChangePwText] = React.useState('');
 
+  const [isIdAvailable, onChangeIdAvailable] = React.useState(false);
+
   const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
@@ -80,6 +82,41 @@ function SignUp({navigation}) {
     */
   };
 
+  const checkId = () => {
+    fetch(constant.BASEURL + 'join/checkId', {
+        method: 'POST',
+        headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        id: idText
+        })
+    })
+    .then((response) => {
+        // console.log("response");
+        console.log(response);
+        if (response.status == 200){
+            return response.json();
+        }  
+        else {
+          console.log(response.status);
+        }
+    })
+    .then((data) => {
+        if(data.data != null){
+            console.log("Bad ID");
+            onChangeIdAvailable(false);
+        }
+        else if(data.data === null){
+            console.log("GOOD ID ");
+            onChangeIdAvailable(true);
+        }
+
+        console.log(data.message);
+    });
+  };
+
   return (
     <View style={nStyles.container}>
       <StatusBar
@@ -110,6 +147,16 @@ function SignUp({navigation}) {
             placeholder="ID"
             placeholderTextColor={'#000'}
           />
+
+          <TouchableOpacity
+            style={nStyles.btn}
+            onPress={checkId}
+            activeOpacity={0.6}
+          >
+            <Text style={nStyles.btnText}>
+              중복확인 
+            </Text>
+          </TouchableOpacity>
 
           {/* PW INPUT AREA */}
           <TextInput
