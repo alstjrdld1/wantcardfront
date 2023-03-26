@@ -1,5 +1,8 @@
 import constant from '../Constants';
 import theme from '../Themes';
+import FlatButton from '../components/FlatButton';
+import FlatTextInput from '../components/FlatTextInput';
+import FlatHiddenTouchable from '../components/FlatHiddenTouchable';
 
 import React from 'react';
 import type { Node } from 'react';
@@ -7,24 +10,16 @@ import {
   SafeAreaView,
   View,
   Text,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  TextInput, // 대신 FlatTextInput 사용하기
+  TouchableOpacity, // 대신 FlatButton 사용하기
+  TouchableWithoutFeedback, // 대신 FlatHiddenTouchable 사용하기
+  StatusBar,
   Keyboard,
   StyleSheet,
-  StatusBar,
-  Dimensions,
   useColorScheme,
 } from 'react-native';
-// import {
-//   Colors,
-//   DebugInstructions,
-//   Header,
-//   LearnMoreLinks,
-//   ReloadInstructions,
-// } from 'react-native/Libraries/NewAppScreen';
 
-function SignUp({navigation}) {
+function SignUp({ navigation }) {
   const isDarkMode = useColorScheme() === 'dark';
   const nTheme = isDarkMode ? theme.darkTheme : theme.lightTheme;
   const nStyles = createStyles(nTheme);
@@ -123,92 +118,74 @@ function SignUp({navigation}) {
         backgroundColor={nTheme.mainColor}
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
       />
-      <View style={nStyles.overlayBg}>
-      </View>
+      <View style={nStyles.colorForNav} />
       <SafeAreaView style={nStyles.safeAreaView}>
 
         {/* Header */}
         <View style={nStyles.header}>
-          <Text style={nStyles.headerTitle}>
-            SignUp
-          </Text>
+          <FlatHiddenTouchable onPress={dismissKeyboard} style={nStyles.dismissKeyboard} />
+          <Text style={nStyles.headerTitle}>SignUp</Text>
         </View>
 
         {/* Contents */}
         <View style={nStyles.contents}>
-          <View style={nStyles.dismissKeyboardTouchView}>
-            <TouchableWithoutFeedback onPress={dismissKeyboard}>
-              <View style={nStyles.dismissKeyboardTouch}>
-              </View>
-            </TouchableWithoutFeedback>
+          <FlatHiddenTouchable onPress={dismissKeyboard} style={{ ...nStyles.dismissKeyboard, zIndex: 51 }} />
+
+          <View style={{ flexDirection: 'row', width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}>
+            {/* 1-1. ID INPUT AREA */}
+            <FlatTextInput
+              value={idText}
+              onChangeText={onChangeIdText}
+              placeholder="ID"
+              style={{ flex: 1, marginRight: 12 }}
+            />
+
+            {/* 1-2. 중복 확인 BUTTON */}
+            <FlatButton
+              text="중복 확인"
+              onPress={checkId}
+              style={{ width: 100 }}
+            />
           </View>
 
-          {/* ID INPUT AREA */}
-          <TextInput
-            style={nStyles.input}
-            value={idText}
-            onChangeText={onChangeIdText}
-            placeholder="ID"
-            placeholderTextColor={'#000'}
-          />
-
-          {/* 중복 확인 BUTTON */}
-          <TouchableOpacity
-            style={nStyles.btn}
-            onPress={checkId}
-            activeOpacity={0.6}
-          >
-            <Text style={nStyles.btnText}>
-              중복 확인
-            </Text>
-          </TouchableOpacity>
-
-          {/* PW INPUT AREA */}
-          <TextInput
-            style={nStyles.input}
+          {/* 2. PW INPUT AREA */}
+          <FlatTextInput
             value={pwText}
             onChangeText={onChangePwText}
             placeholder="PW"
-            placeholderTextColor={'#000'}
+            style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
           />
 
-          {/* NAME INPUT AREA */}
-          <TextInput
-            style={nStyles.input}
+          {/* 3. NAME INPUT AREA */}
+          <FlatTextInput
             value={nameText}
             onChangeText={onChangeNameText}
             placeholder="NAME"
-            placeholderTextColor={'#000'}
+            style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
           />
 
-          {/* PHONE NUMBER INPUT AREA */}
-          <TextInput
-            style={nStyles.input}
+          {/* 4. PHONE NUMBER INPUT AREA */}
+          <FlatTextInput
             value={phoneNumberText}
             onChangeText={onChangePhoneNumberText}
             placeholder="Write like this 010-1111-1111"
-            placeholderTextColor={'#000'}
+            style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
           />
 
-          {/* EMAIL INPUT AREA */}
-          <TextInput
-            style={nStyles.input}
+          {/* 5. EMAIL INPUT AREA */}
+          <FlatTextInput
             value={emailText}
             onChangeText={onChangeEmailText}
             placeholder="example@gmail.com"
-            placeholderTextColor={'#000'}
+            style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
           />
 
-          {/* SIGN UP BUTTON */}
-          <TouchableOpacity
-            style={nStyles.btn}
+          {/* 6. SIGN UP BUTTON */}
+          <FlatButton
+            text="Sign Up"
             onPress={submitClick}
-            activeOpacity={0.6}
-          >
-            <Text style={nStyles.btnText}>
-              SignUp
-            </Text>
-          </TouchableOpacity>
+            style={{ width: constant.SCREEN_WIDTH * 0.45, marginTop: 24, zIndex: 52 }}
+          />
         </View>
       </SafeAreaView>
     </View>
@@ -220,29 +197,30 @@ const createStyles = (nTheme) => StyleSheet.create({
     flex: 1,
     backgroundColor: nTheme.mainColor,
   },
-  overlayBg: {
+  colorForNav: {
+    zIndex: 1,
     position: 'absolute',
     bottom: 0,
     width: constant.SCREEN_WIDTH,
-    height: 160,
+    height: constant.SCREEN_HEIGHT * 0.5,
     backgroundColor: nTheme.bgColor,
   },
   safeAreaView: {
-    zIndex: 1,
+    zIndex: 2,
     flex: 1,
   },
   header: {
-    width: constant.SCREEN_WIDTH,
-    height: 70,
-    paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    width: constant.SCREEN_WIDTH,
+    height: 70,
+    paddingHorizontal: 12,
     backgroundColor: nTheme.mainColor,
   },
   headerTitle: {
-    fontSize: 28,
     paddingHorizontal: 12,
+    fontSize: 28,
     fontWeight: '700',
     color: nTheme.mainTextColor,
   },
@@ -252,41 +230,13 @@ const createStyles = (nTheme) => StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: nTheme.bgColor,
   },
-  dismissKeyboardTouchView: {
-    zIndex: 2,
+  dismissKeyboard: {
+    flex: 1,
     position: 'absolute',
     top: 0,
-  },
-  dismissKeyboardTouch: {
-    width: constant.SCREEN_WIDTH,
-    height: constant.SCREEN_HEIGHT,
-  },
-  input: {
-    zIndex: 3,
-    width: constant.SCREEN_WIDTH - 80,
-    height: 56,
-    marginBottom: 20,
-    padding: 20,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: '#012',
-    backgroundColor: '#fff',
-    color: '#000',
-    fontSize: 16,
-  },
-  btn: {
-    zIndex: 3,
-    width: (constant.SCREEN_WIDTH - 80) * 0.5,
-    height: 56,
-    marginTop: 20,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: nTheme.mainColor,
-  },
-  btnText: {
-    color: nTheme.mainTextColor,
-    fontSize: 18,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });
 

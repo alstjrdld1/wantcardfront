@@ -1,5 +1,8 @@
 import constant from '../Constants';
 import theme from '../Themes';
+import FlatButton from '../components/FlatButton';
+import FlatTextInput from '../components/FlatTextInput';
+import FlatHiddenTouchable from '../components/FlatHiddenTouchable';
 
 import React from 'react';
 import type { Node } from 'react';
@@ -7,24 +10,16 @@ import {
   SafeAreaView,
   View,
   Text,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
+  TextInput, // 대신 FlatTextInput 사용하기
+  TouchableOpacity, // 대신 FlatButton 사용하기
+  TouchableWithoutFeedback, // 대신 FlatHiddenTouchable 사용하기
+  StatusBar,
   Keyboard,
   StyleSheet,
-  StatusBar,
-  Dimensions,
   useColorScheme,
 } from 'react-native';
-// import {
-//   Colors,
-//   DebugInstructions,
-//   Header,
-//   LearnMoreLinks,
-//   ReloadInstructions,
-// } from 'react-native/Libraries/NewAppScreen';
 
-function Login({navigation}) {
+function Login({ navigation }) {
   const isDarkMode = useColorScheme() === 'dark';
   const nTheme = isDarkMode ? theme.darkTheme : theme.lightTheme;
   const nStyles = createStyles(nTheme);
@@ -58,7 +53,7 @@ function Login({navigation}) {
       if (response.status == 200){
         console.log("Go Next Page");
         return response.json();
-      }  
+      }
       else {
         console.log(response.status);
       }
@@ -83,65 +78,50 @@ function Login({navigation}) {
         backgroundColor={nTheme.mainColor}
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
       />
-      <View style={nStyles.overlayBg}>
-      </View>
+      <View style={nStyles.colorForNav} />
       <SafeAreaView style={nStyles.safeAreaView}>
 
         {/* Header */}
         <View style={nStyles.header}>
-          <Text style={nStyles.headerTitle}>
-            LOGIN
-          </Text>
+          <FlatHiddenTouchable onPress={dismissKeyboard} style={nStyles.dismissKeyboard} />
+          <Text style={nStyles.headerTitle}>LOGIN</Text>
         </View>
 
         {/* Contents */}
         <View style={nStyles.contents}>
-          <View style={nStyles.dismissKeyboardTouchView}>
-            <TouchableWithoutFeedback onPress={dismissKeyboard}>
-              <View style={nStyles.dismissKeyboardTouch}>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
+          <FlatHiddenTouchable onPress={dismissKeyboard} style={{ ...nStyles.dismissKeyboard, zIndex: 51 }} />
 
-          {/* ID INPUT AREA */}
-          <TextInput
-            style={nStyles.input}
+          {/* 1. ID INPUT AREA */}
+          <FlatTextInput
             value={idText}
             onChangeText={onChangeIdText}
             placeholder="ID"
-            placeholderTextColor={'#000'}
+            style={{ width: constant.SCREEN_WIDTH * 0.8, marginBottom: 16, zIndex: 52 }}
           />
 
-          {/* PW INPUT AREA */}
-          <TextInput
-            style={nStyles.input}
+          {/* 2. PW INPUT AREA */}
+          <FlatTextInput
             value={pwText}
             onChangeText={onChangePwText}
             placeholder="PW"
-            placeholderTextColor={'#000'}
+            style={{ width: constant.SCREEN_WIDTH * 0.8, marginBottom: 16, zIndex: 52 }}
           />
 
-          {/* LOGIN BUTTON */}
-          <TouchableOpacity
-            style={nStyles.btn}
-            onPress={submitClick}
-            activeOpacity={0.6}
-          >
-            <Text style={nStyles.btnText}>
-              LOGIN
-            </Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', width: constant.SCREEN_WIDTH * 0.8, marginTop: 24, zIndex: 52 }}>
+            {/* 3-1. LOGIN BUTTON */}
+            <FlatButton
+              text='LOGIN'
+              onPress={submitClick}
+              style={{ flex: 1, marginRight: 16 }}
+            />
 
-          {/* SIGN UP BUTTON */}
-          <TouchableOpacity
-            style={nStyles.btn}
-            onPress={goSignUp}
-            activeOpacity={0.6}
-          >
-            <Text style={nStyles.btnText}>
-              Sign Up
-            </Text>
-          </TouchableOpacity>
+            {/* 3-2. SIGN UP BUTTON */}
+            <FlatButton
+              text='Sign Up'
+              onPress={goSignUp}
+              style={{ flex: 1 }}
+            />
+          </View>
         </View>
       </SafeAreaView>
     </View>
@@ -153,29 +133,30 @@ const createStyles = (nTheme) => StyleSheet.create({
     flex: 1,
     backgroundColor: nTheme.mainColor,
   },
-  overlayBg: {
+  colorForNav: {
+    zIndex: 1,
     position: 'absolute',
     bottom: 0,
     width: constant.SCREEN_WIDTH,
-    height: 160,
+    height: constant.SCREEN_HEIGHT * 0.5,
     backgroundColor: nTheme.bgColor,
   },
   safeAreaView: {
-    zIndex: 1,
+    zIndex: 2,
     flex: 1,
   },
   header: {
-    width: constant.SCREEN_WIDTH,
-    height: 70,
-    paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    width: constant.SCREEN_WIDTH,
+    height: 70,
+    paddingHorizontal: 12,
     backgroundColor: nTheme.mainColor,
   },
   headerTitle: {
-    fontSize: 28,
     paddingHorizontal: 12,
+    fontSize: 28,
     fontWeight: '700',
     color: nTheme.mainTextColor,
   },
@@ -185,41 +166,13 @@ const createStyles = (nTheme) => StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: nTheme.bgColor,
   },
-  dismissKeyboardTouchView: {
-    zIndex: 2,
+  dismissKeyboard: {
+    flex: 1,
     position: 'absolute',
     top: 0,
-  },
-  dismissKeyboardTouch: {
-    width: constant.SCREEN_WIDTH,
-    height: constant.SCREEN_HEIGHT,
-  },
-  input: {
-    zIndex: 3,
-    width: constant.SCREEN_WIDTH - 80,
-    height: 56,
-    marginBottom: 20,
-    padding: 20,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: '#012',
-    backgroundColor: '#fff',
-    color: '#000',
-    fontSize: 16,
-  },
-  btn: {
-    zIndex: 3,
-    width: (constant.SCREEN_WIDTH - 80) * 0.5,
-    height: 56,
-    marginTop: 20,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: nTheme.mainColor,
-  },
-  btnText: {
-    color: nTheme.mainTextColor,
-    fontSize: 18,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });
 

@@ -9,16 +9,14 @@ import {
   SafeAreaView,
   View,
   Text,
-  StyleSheet,
   StatusBar,
-  Dimensions,
-  Platform,
+  StyleSheet,
   useColorScheme,
 } from 'react-native';
 
 const Stack = createStackNavigator();
 
-function Main({route, navigation}) {
+function Main({ route, navigation }) {
   const isDarkMode = useColorScheme() === 'dark';
   const nTheme = isDarkMode ? theme.darkTheme : theme.lightTheme;
   const nStyles = createStyles(nTheme);
@@ -54,21 +52,17 @@ function Main({route, navigation}) {
 
   return (
     <View style={nStyles.container}>
-      <View style={nStyles.overlayBg} />
+      <StatusBar
+        backgroundColor={nTheme.mainColor}
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      />
+      <View style={nStyles.colorForNav} />
       <SafeAreaView style={nStyles.safeAreaView}>
-        <StatusBar
-          backgroundColor={nTheme.mainColor}
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        />
 
         {/* Header */}
         <View style={nStyles.header}>
-          <Text style={nStyles.headerTitle}>
-            WANT CARD
-          </Text>
-          <Text style={nStyles.headerMenu}>
-            Menu
-          </Text>
+          <Text style={nStyles.headerTitle}>WANT CARD</Text>
+          <Text style={nStyles.headerMenu}>Menu</Text>
         </View>
 
         {/* Contents */}
@@ -88,35 +82,36 @@ const createStyles = (nTheme) => StyleSheet.create({
     flex: 1,
     backgroundColor: nTheme.mainColor,
   },
-  overlayBg: {
+  colorForNav: {
+    zIndex: 1,
     position: 'absolute',
     bottom: 0,
     width: constant.SCREEN_WIDTH,
-    height: 160,
+    height: constant.SCREEN_HEIGHT * 0.5,
     backgroundColor: nTheme.bgColor,
   },
   safeAreaView: {
-    zIndex: 1,
+    zIndex: 2,
     flex: 1,
   },
   header: {
-    width: constant.SCREEN_WIDTH,
-    height: 70,
-    paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    width: constant.SCREEN_WIDTH,
+    height: 70,
+    paddingHorizontal: 12,
     backgroundColor: nTheme.mainColor,
   },
   headerTitle: {
-    fontSize: 28,
     paddingHorizontal: 12,
+    fontSize: 28,
     fontWeight: '700',
     color: nTheme.mainTextColor,
   },
   headerMenu: {
-    fontSize: 20,
     paddingHorizontal: 12,
+    fontSize: 20,
     fontWeight: '400',
     color: nTheme.mainTextColor,
   },
