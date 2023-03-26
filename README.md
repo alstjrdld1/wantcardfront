@@ -6,3 +6,10 @@
  - npm install 
  - cd ios 
  - pod install 
+ - nodemon app.js
+
+# Update log 
+ | 2023.03.26 | Add SignUp Page and move SCREEN_WIDTH and SCREEN_HEIGTH into constants.js 
+  + Divide SignUp and Login Page
+
+

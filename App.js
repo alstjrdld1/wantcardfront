@@ -9,6 +9,7 @@
 import Login from './views/Login';
 import Main from './views/Main';
 import Home from './views/Home';
+import SignUp from './views/SignUp';
 
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
@@ -24,6 +25,7 @@ function App() {
         <Stack.Screen name="Login" component={Login} options={{headerShown: false}} />
         <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
         <Stack.Screen name="Main" component={Main} options={{headerShown: false}} />
+        <Stack.Screen name="SignUp" component={SignUp} options={{headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

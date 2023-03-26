@@ -17,10 +17,8 @@ import {
 } from 'react-native';
 
 const Stack = createStackNavigator();
-const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 function Main({route, navigation}) {
-  const currentPlatform = Platform.OS;
   const isDarkMode = useColorScheme() === 'dark';
   const nTheme = isDarkMode ? theme.darkTheme : theme.lightTheme;
   const nStyles = createStyles(nTheme);
@@ -71,7 +69,7 @@ function Main({route, navigation}) {
           </Text>
         </View>
         <View style={nStyles.contents}>
-          <Card cardWidth={SCREEN_WIDTH * 0.7} />
+          <Card cardWidth={constant.SCREEN_WIDTH * 0.7} />
           {listItems.map((item, index) => (
             <Text key={index}>{item.card_file_name}{item.card_nickname}</Text>
           ))}
@@ -89,7 +87,7 @@ const createStyles = (nTheme) => StyleSheet.create({
   overlayBg: {
     position: 'absolute',
     bottom: 0,
-    width: SCREEN_WIDTH,
+    width: constant.SCREEN_WIDTH,
     height: 160,
     backgroundColor: nTheme.bgColor,
   },
@@ -98,7 +96,7 @@ const createStyles = (nTheme) => StyleSheet.create({
     flex: 1,
   },
   header: {
-    width: SCREEN_WIDTH,
+    width: constant.SCREEN_WIDTH,
     height: 70,
     paddingHorizontal: 8,
     flexDirection: 'row',

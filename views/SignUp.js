@@ -24,10 +24,14 @@ import {
 //   ReloadInstructions,
 // } from 'react-native/Libraries/NewAppScreen';
 
-function Login({navigation}) {
+function SignUp({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const nTheme = isDarkMode ? theme.darkTheme : theme.lightTheme;
   const nStyles = createStyles(nTheme);
+
+  const [nameText, onChangeNameText] = React.useState('');
+  const [phoneNumberText, onChangePhoneNumberText] = React.useState('');
+  const [emailText, onChangeEmailText] = React.useState('');
 
   const [idText, onChangeIdText] = React.useState('');
   const [pwText, onChangePwText] = React.useState('');
@@ -37,11 +41,13 @@ function Login({navigation}) {
   };
 
   const submitClick = () => {
+    navigation.goBack();
+
     // navigation.navigate('Main', {uid: 1}); // code for skip
     // return; // code for skip
-
+    /*
     console.log("Sending signup request");
-    fetch(constant.BASEURL + 'join/login', {
+    fetch(constant.BASEURL + 'join/signup', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -64,17 +70,14 @@ function Login({navigation}) {
       }
     })
     .then((data) => {
-      navigation.navigate('Main', {uid: data.uid});
+    //   navigation.navigate('Main', {uid: data.uid});
+      navigation.goBack();
       console.log(data);
     })
     .catch((error) => {
       console.error(error);
     });
-  };
-
-  const goSignUp = () => {
-    console.log("Go Sign Up");
-    navigation.navigate('SignUp');
+    */
   };
 
   return (
@@ -88,7 +91,7 @@ function Login({navigation}) {
       <SafeAreaView style={nStyles.safeAreaView}>
         <View style={nStyles.header}>
           <Text style={nStyles.headerTitle}>
-            LOGIN
+            SignUp
           </Text>
         </View>
         <View style={nStyles.contents}>
@@ -117,23 +120,40 @@ function Login({navigation}) {
             placeholderTextColor={'#000'}
           />
 
+          {/* NAME INPUT AREA */}
+          <TextInput
+            style={nStyles.input}
+            value={nameText}
+            onChangeText={onChangeNameText}
+            placeholder="NAME"
+            placeholderTextColor={'#000'}
+          />
+
+          {/* PHONE NUMBER INPUT AREA */}
+          <TextInput
+            style={nStyles.input}
+            value={phoneNumberText}
+            onChangeText={onChangePhoneNumberText}
+            placeholder="Write like this 010-1111-1111"
+            placeholderTextColor={'#000'}
+          />
+
+          {/* EMAIL INPUT AREA */}
+          <TextInput
+            style={nStyles.input}
+            value={emailText}
+            onChangeText={onChangeEmailText}
+            placeholder="example@gmail.com"
+            placeholderTextColor={'#000'}
+          />
+
           <TouchableOpacity
             style={nStyles.btn}
             onPress={submitClick}
             activeOpacity={0.6}
           >
             <Text style={nStyles.btnText}>
-              LOGIN
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={nStyles.btn}
-            onPress={goSignUp}
-            activeOpacity={0.6}
-          >
-            <Text style={nStyles.btnText}>
-              Sign Up
+              SignUp
             </Text>
           </TouchableOpacity>
         </View>
@@ -217,4 +237,4 @@ const createStyles = (nTheme) => StyleSheet.create({
   },
 });
 
-export default Login;
+export default SignUp;
