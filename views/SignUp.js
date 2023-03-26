@@ -1,5 +1,5 @@
 import constant from '../Constants';
-import { theme } from '../Themes';
+import theme from '../Themes';
 
 import React from 'react';
 import type { Node } from 'react';
@@ -84,36 +84,36 @@ function SignUp({navigation}) {
 
   const checkId = () => {
     fetch(constant.BASEURL + 'join/checkId', {
-        method: 'POST',
-        headers: {
+      method: 'POST',
+      headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-        id: idText
-        })
+      },
+      body: JSON.stringify({
+        id: idText,
+      })
     })
     .then((response) => {
-        // console.log("response");
-        console.log(response);
-        if (response.status == 200){
-            return response.json();
-        }  
-        else {
-          console.log(response.status);
-        }
+      // console.log("response");
+      console.log(response);
+      if (response.status == 200){
+        return response.json();
+      }
+      else {
+        console.log(response.status);
+      }
     })
     .then((data) => {
-        if(data.data != null){
-            console.log("Bad ID");
-            onChangeIdAvailable(false);
-        }
-        else if(data.data === null){
-            console.log("GOOD ID ");
-            onChangeIdAvailable(true);
-        }
+      if (data.data != null){
+        console.log("Bad ID");
+        onChangeIdAvailable(false);
+      }
+      else if (data.data === null){
+        console.log("GOOD ID");
+        onChangeIdAvailable(true);
+      }
 
-        console.log(data.message);
+      console.log(data.message);
     });
   };
 
@@ -126,11 +126,15 @@ function SignUp({navigation}) {
       <View style={nStyles.overlayBg}>
       </View>
       <SafeAreaView style={nStyles.safeAreaView}>
+
+        {/* Header */}
         <View style={nStyles.header}>
           <Text style={nStyles.headerTitle}>
             SignUp
           </Text>
         </View>
+
+        {/* Contents */}
         <View style={nStyles.contents}>
           <View style={nStyles.dismissKeyboardTouchView}>
             <TouchableWithoutFeedback onPress={dismissKeyboard}>
@@ -148,13 +152,14 @@ function SignUp({navigation}) {
             placeholderTextColor={'#000'}
           />
 
+          {/* 중복 확인 BUTTON */}
           <TouchableOpacity
             style={nStyles.btn}
             onPress={checkId}
             activeOpacity={0.6}
           >
             <Text style={nStyles.btnText}>
-              중복확인 
+              중복 확인
             </Text>
           </TouchableOpacity>
 
@@ -194,6 +199,7 @@ function SignUp({navigation}) {
             placeholderTextColor={'#000'}
           />
 
+          {/* SIGN UP BUTTON */}
           <TouchableOpacity
             style={nStyles.btn}
             onPress={submitClick}

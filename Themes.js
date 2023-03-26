@@ -12,7 +12,7 @@ const darkTheme = {
   cardColor: '#cce1ff',
 };
 
-export const theme = {
+module.exports = {
   lightTheme,
   darkTheme,
-};
+}

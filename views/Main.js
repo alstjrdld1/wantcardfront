@@ -1,5 +1,5 @@
 import constant from '../Constants';
-import { theme } from '../Themes';
+import theme from '../Themes';
 import Card from '../components/Card';
 
 import React, { useState, useEffect } from 'react';
@@ -60,6 +60,8 @@ function Main({route, navigation}) {
           backgroundColor={nTheme.mainColor}
           barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         />
+
+        {/* Header */}
         <View style={nStyles.header}>
           <Text style={nStyles.headerTitle}>
             WANT CARD
@@ -68,6 +70,8 @@ function Main({route, navigation}) {
             Menu
           </Text>
         </View>
+
+        {/* Contents */}
         <View style={nStyles.contents}>
           <Card cardWidth={constant.SCREEN_WIDTH * 0.7} />
           {listItems.map((item, index) => (

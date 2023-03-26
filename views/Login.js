@@ -1,5 +1,5 @@
 import constant from '../Constants';
-import { theme } from '../Themes';
+import theme from '../Themes';
 
 import React from 'react';
 import type { Node } from 'react';
@@ -86,11 +86,15 @@ function Login({navigation}) {
       <View style={nStyles.overlayBg}>
       </View>
       <SafeAreaView style={nStyles.safeAreaView}>
+
+        {/* Header */}
         <View style={nStyles.header}>
           <Text style={nStyles.headerTitle}>
             LOGIN
           </Text>
         </View>
+
+        {/* Contents */}
         <View style={nStyles.contents}>
           <View style={nStyles.dismissKeyboardTouchView}>
             <TouchableWithoutFeedback onPress={dismissKeyboard}>
@@ -117,6 +121,7 @@ function Login({navigation}) {
             placeholderTextColor={'#000'}
           />
 
+          {/* LOGIN BUTTON */}
           <TouchableOpacity
             style={nStyles.btn}
             onPress={submitClick}
@@ -127,6 +132,7 @@ function Login({navigation}) {
             </Text>
           </TouchableOpacity>
 
+          {/* SIGN UP BUTTON */}
           <TouchableOpacity
             style={nStyles.btn}
             onPress={goSignUp}
