@@ -18,6 +18,7 @@ function Card({ cardWidth }) {
   );
 }
 
+// Create Styles를 함수화 해서 컴포넌트가 변수를 받아서 스타일 설정 할 수 있게 만들어줌 
 const createStyles = (nTheme, cardWidth) => StyleSheet.create({
   card: {
     width: cardWidth,

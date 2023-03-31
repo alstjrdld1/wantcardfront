@@ -31,7 +31,9 @@ function SignUp({ navigation }) {
   const [idText, onChangeIdText] = React.useState('');
   const [pwText, onChangePwText] = React.useState('');
 
+  // Check variables for sign up query submission
   const [isIdAvailable, onChangeIdAvailable] = React.useState(false);
+  const [isVerified, onChangeVerifiedState] = React.useState(false);
 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
@@ -89,8 +91,7 @@ function SignUp({ navigation }) {
       })
     })
     .then((response) => {
-      // console.log("response");
-      console.log(response);
+      // console.log(response);
       if (response.status == 200){
         return response.json();
       }
@@ -148,6 +149,16 @@ function SignUp({ navigation }) {
             />
           </View>
 
+          {isIdAvailable ? 
+            <Text>
+              사용 가능한 아이디입니다.
+            </Text>
+            :
+            <Text>
+              사용 불가능한 아이디입니다.
+            </Text>
+          }
+
           {/* 2. PW INPUT AREA */}
           <FlatTextInput
             value={pwText}
@@ -164,15 +175,41 @@ function SignUp({ navigation }) {
             style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
           />
 
-          {/* 4. PHONE NUMBER INPUT AREA */}
-          <FlatTextInput
+          <View style={{ flexDirection: 'row', width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}>
+            {/* 4-1. PHONE NUMBER INPUT AREA */}
+            <FlatTextInput
             value={phoneNumberText}
             onChangeText={onChangePhoneNumberText}
-            placeholder="Write like this 010-1111-1111"
-            style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
-          />
+            placeholder= "010-1111-1111"
+            style={{ flex: 1, marginRight: 12 }}
+            />
 
-          {/* 5. EMAIL INPUT AREA */}
+            {/* 4-2. 인증번호 BUTTON */}
+            <FlatButton
+              text="중복 확인"
+              onPress={checkId}
+              style={{ width: 100 }}
+            />
+          </View>
+
+          <View style={{ flexDirection: 'row', width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}>
+            {/* 5-1. PHONE NUMBER INPUT AREA */}
+            <FlatTextInput
+            value={phoneNumberText}
+            onChangeText={onChangePhoneNumberText}
+            placeholder= "인증번호"
+            style={{ flex: 1, marginRight: 12 }}
+            />
+
+            {/* 5-2. 인증번호 BUTTON */}
+            <FlatButton
+              text="인증 확인"
+              onPress={checkId}
+              style={{ width: 100 }}
+            />
+          </View>
+
+          {/* 6. EMAIL INPUT AREA */}
           <FlatTextInput
             value={emailText}
             onChangeText={onChangeEmailText}
@@ -180,7 +217,7 @@ function SignUp({ navigation }) {
             style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
           />
 
-          {/* 6. SIGN UP BUTTON */}
+          {/* 7. SIGN UP BUTTON */}
           <FlatButton
             text="Sign Up"
             onPress={submitClick}

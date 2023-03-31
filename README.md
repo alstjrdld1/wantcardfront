@@ -6,7 +6,7 @@
  - npm install
  - cd ios
  - pod install
- - nodemon app.js
+ - react-native run-ios | or react-native run-android
 
 # Update log
  | 2023.03.25 |
