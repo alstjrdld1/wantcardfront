@@ -21,12 +21,12 @@ const Stack = createStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS}}>
-        <Stack.Screen name="Login" component={Login} options={{headerShown: false}} />
-        <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
-        <Stack.Screen name="Main" component={Main} options={{headerShown: false}} />
-        <Stack.Screen name="SignUp" component={SignUp} options={{headerShown: false}} />
-      </Stack.Navigator>
+        <Stack.Navigator screenOptions={{cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS}}>
+          <Stack.Screen name="Login" component={Login} options={{headerShown: false}} />
+          <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
+          <Stack.Screen name="Main" component={Main} options={{headerShown: false}} />
+          <Stack.Screen name="SignUp" component={SignUp} options={{headerShown: false}} />
+        </Stack.Navigator>
     </NavigationContainer>
   );
 }

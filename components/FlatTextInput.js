@@ -4,7 +4,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-function FlatTextInput({ value, onChangeText, placeholder, style }) {
+function FlatTextInput({ value, onChangeText, placeholder, style, editable=true}) {
   return (
     <TextInput
       value={value}
@@ -12,6 +12,7 @@ function FlatTextInput({ value, onChangeText, placeholder, style }) {
       placeholder={placeholder}
       placeholderTextColor={'#999'}
       style={{ ...styles.input, ...style }}
+      editable={editable}
     />
   );
 }

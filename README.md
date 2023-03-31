@@ -18,3 +18,7 @@
   + Add SignUp Page and move SCREEN_WIDTH and SCREEN_HEIGHT into constants.js
   + Divide SignUp and Login Page
   + Add Duplicate Id Function Button
+
+ | 2023.03.31 |
+  + Add VerifyNumber area
+  + Add function when verified, lock the input area.
