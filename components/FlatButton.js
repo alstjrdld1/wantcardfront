@@ -29,13 +29,13 @@ const createStyles = (nTheme) =>
     button: {
       alignItems: 'center',
       justifyContent: 'center',
-      height: 56,
-      borderRadius: 24,
+      height: 50,
+      borderRadius: 22,
       backgroundColor: nTheme.mainColor,
     },
     buttonText: {
       color: nTheme.mainTextColor,
-      fontSize: 18,
+      fontSize: 16,
     },
   });
 

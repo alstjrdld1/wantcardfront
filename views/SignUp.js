@@ -3,8 +3,8 @@ import theme from '../Themes';
 import FlatButton from '../components/FlatButton';
 import FlatTextInput from '../components/FlatTextInput';
 import FlatHiddenTouchable from '../components/FlatHiddenTouchable';
-import {generateRandomNumber} from '../utils/generate';
-import {requestSignUp, requestIdCheck} from './SignUpAPI';
+import { generateRandomNumber } from '../utils/generate';
+import { requestSignUp, requestCheckId } from './SignUpAPI';
 
 import React from 'react';
 import type { Node } from 'react';
@@ -26,29 +26,44 @@ function SignUp({ navigation }) {
   const nTheme = isDarkMode ? theme.darkTheme : theme.lightTheme;
   const nStyles = createStyles(nTheme);
 
-  const [nameText, onChangeNameText] = React.useState('');
-  
-  const [emailText, onChangeEmailText] = React.useState('');
-  
   const [idText, onChangeIdText] = React.useState('');
-  const [idEditable, onChangeIdEditable] = React.useState(true);
-  
+  const [idAvailable, onChangeIdAvailable] = React.useState('needCheck');
+
   const [pwText, onChangePwText] = React.useState('');
-  const [pwEditable, onChangePwEditable] = React.useState(true);
-  
+  const [pwText2, onChangePwText2] = React.useState('');
+  const [pwVerified, onChangePwVerified] = React.useState('needCheck');
+
+  const [nameText, onChangeNameText] = React.useState('');
+
   const [phoneNumberText, onChangePhoneNumberText] = React.useState('');
   const [phoneNumberEditable, onChangePhoneNumberEditable] = React.useState(true);
 
   const [generatedVerifyNumber, onGenerateNumber] = React.useState('');
   const [enteredVerifyNumber, onChangeVerifyNumber] = React.useState('');
   const [verifyNumberEditable, onChangeVerifyEditable] = React.useState(true);
- 
+
+  const [emailText, onChangeEmailText] = React.useState('');
+
   // Check variables for sign up query submission
-  const [isIdAvailable, onChangeIdAvailable] = React.useState(false);
   const [isVerified, onChangeVerifiedState] = React.useState(false);
 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
+  };
+
+  const handleChangeIdText = (id) => {
+    onChangeIdText(id);
+    onChangeIdAvailable('needCheck')
+  };
+
+  const handleChangePwText = (pw) => {
+    onChangePwText(pw);
+    onChangePwVerified(pwText === pwText2 ? 'good' : 'bad');
+  };
+
+  const handleChangePwText2 = (pw2) => {
+    onChangePwText2(pw2);
+    onChangePwVerified(pwText === pwText2 ? 'good' : 'bad');
   };
 
   // ABOUT VERIFY 
@@ -58,7 +73,7 @@ function SignUp({ navigation }) {
     onGenerateNumber(num);
     onChangeVerifyNumber('');
   }
-  
+
   const checkVerifyNumber = () => {
     if(generatedVerifyNumber != ''){
       if(Number(generatedVerifyNumber) == Number(enteredVerifyNumber)){
@@ -84,31 +99,32 @@ function SignUp({ navigation }) {
     }
   };
   
-  const checkIdRequest = () => {
+  const onSubmitCheckId = async () => {
     console.log("ID Check Reuqest");
-    let result = requestIdCheck(idText);
-    onChangeIdAvailable(result);
+    const result = await requestCheckId(idText);
+    onChangeIdAvailable(result ? 'good' : 'bad');
+    console.log("onSubmitCheckId", result);
   };
-  
-  const signUpRequest = () => {
+
+  const onSubmitSignUp = async () => {
     console.log("Sending signup request");
-    let result = requestSignUp(idText, pwText, '11', '010-1234-5678', 'mmm@gmail.com'); // When doing signUp, put variables id, pw, name, phonenumber, email.
+    const result = await requestSignUp(idText, pwText, '11', '010-1234-5678', 'mmm@gmail.com'); // When doing signUp, put variables id, pw, name, phonenumber, email.
     result ? navigation.goBack() : console.log("sign up request falied");
   };
-  
+
   return (
     <View style={nStyles.container}>
       <StatusBar
         backgroundColor={nTheme.mainColor}
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        />
+      />
       <View style={nStyles.colorForNav} />
       <SafeAreaView style={nStyles.safeAreaView}>
 
         {/* Header */}
         <View style={nStyles.header}>
           <FlatHiddenTouchable onPress={dismissKeyboard} style={nStyles.dismissKeyboard} />
-          <Text style={nStyles.headerTitle}>SignUp</Text>
+          <Text style={nStyles.headerTitle}>회원가입</Text>
         </View>
 
         {/* Contents */}
@@ -119,34 +135,47 @@ function SignUp({ navigation }) {
             {/* 1-1. ID INPUT AREA */}
             <FlatTextInput
               value={idText}
-              onChangeText={onChangeIdText}
-              placeholder="ID"
+              onChangeText={handleChangeIdText}
+              placeholder="아이디"
               style={{ flex: 1, marginRight: 12 }}
             />
 
             {/* 1-2. 중복 확인 BUTTON */}
             <FlatButton
               text="중복 확인"
-              onPress={checkIdRequest}
-              style={{ width: 100 }}
+              onPress={onSubmitCheckId}
+              style={{ width: 116 }}
             />
           </View>
 
-          {isIdAvailable ? 
-            <Text>
-              사용 가능한 아이디입니다.
-            </Text>
+          {idAvailable === "needCheck" ?
+            <View />
             :
-            <Text>
-              사용 불가능한 아이디입니다.
-            </Text>
+            <View style={{ marginBottom: 12 }}>
+              {idAvailable === "good" ?
+                <Text style={{ color: "green" }}>
+                  사용 가능한 아이디입니다.
+                </Text>
+                :
+                <Text style={{ color: "red" }}>
+                  사용할 수 없는 아이디입니다.
+                </Text>
+              }
+            </View>
           }
 
           {/* 2. PW INPUT AREA */}
           <FlatTextInput
             value={pwText}
-            onChangeText={onChangePwText}
-            placeholder="PW"
+            onChangeText={handleChangePwText}
+            placeholder="비밀번호"
+            style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
+          />
+
+          <FlatTextInput
+            value={pwText2}
+            onChangeText={handleChangePwText2}
+            placeholder="비밀번호 확인"
             style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
           />
 
@@ -154,7 +183,7 @@ function SignUp({ navigation }) {
           <FlatTextInput
             value={nameText}
             onChangeText={onChangeNameText}
-            placeholder="NAME"
+            placeholder="이름"
             style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
           />
 
@@ -163,7 +192,7 @@ function SignUp({ navigation }) {
             <FlatTextInput
               value={phoneNumberText}
               onChangeText={onChangePhoneNumberText}
-              placeholder= "010-1111-1111"
+              placeholder= "010-1234-5678"
               style={{ flex: 1, marginRight: 12 }}
               editable={phoneNumberEditable}
             />
@@ -191,7 +220,7 @@ function SignUp({ navigation }) {
             <FlatButton
               text="인증 확인"
               onPress={checkVerifyNumber}
-              style={{ width: 100 }}
+              style={{ width: 116 }}
             />
           </View>
 
@@ -205,8 +234,8 @@ function SignUp({ navigation }) {
 
           {/* 7. SIGN UP BUTTON */}
           <FlatButton
-            text="SIGN UP"
-            onPress={signUpRequest}
+            text="회원가입"
+            onPress={onSubmitSignUp}
             style={{ width: constant.SCREEN_WIDTH * 0.45, marginTop: 24, zIndex: 52 }}
           />
         </View>

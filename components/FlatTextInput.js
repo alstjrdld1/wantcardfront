@@ -11,6 +11,7 @@ function FlatTextInput({ value, onChangeText, placeholder, style, editable=true}
       onChangeText={onChangeText}
       placeholder={placeholder}
       placeholderTextColor={'#999'}
+      autoCapitalize='none'
       style={{ ...styles.input, ...style }}
       editable={editable}
     />
@@ -19,9 +20,10 @@ function FlatTextInput({ value, onChangeText, placeholder, style, editable=true}
 
 const styles = StyleSheet.create({
   input: {
-    height: 56,
-    padding: 20,
-    borderRadius: 24,
+    height: 50,
+    paddingHorizontal: 22,
+    paddingVertical: 10,
+    borderRadius: 22,
     borderWidth: 1,
     borderColor: '#012',
     backgroundColor: '#fff',
