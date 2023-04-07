@@ -4,6 +4,7 @@ import FlatButton from '../components/FlatButton';
 import FlatTextInput from '../components/FlatTextInput';
 import FlatHiddenTouchable from '../components/FlatHiddenTouchable';
 import {generateRandomNumber} from '../utils/generate';
+import {requestSignUp, requestIdCheck} from './SignUpAPI';
 
 import React from 'react';
 import type { Node } from 'react';
@@ -75,6 +76,7 @@ function SignUp({ navigation }) {
       console.log("Please Generate VerifyNumber");
     }
   }
+
   const handleVerifyNumberChange = (value) => {
     const regex = /^[0-9]{0,6}$/;
     if (regex.test(value)) {
@@ -82,78 +84,16 @@ function SignUp({ navigation }) {
     }
   };
   
-  const checkId = () => {
-    fetch(constant.BASEURL + 'join/checkId', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: idText,
-      })
-    })
-    .then((response) => {
-      // console.log(response);
-      if (response.status == 200){
-        return response.json();
-      }
-      else {
-        console.log(response.status);
-      }
-    })
-    .then((data) => {
-      if (data.data != null){
-        console.log("Bad ID");
-        onChangeIdAvailable(false);
-      }
-      else if (data.data === null){
-        console.log("GOOD ID");
-        onChangeIdAvailable(true);
-      }
-      
-      console.log(data.message);
-    });
+  const checkIdRequest = () => {
+    console.log("ID Check Reuqest");
+    let result = requestIdCheck(idText);
+    onChangeIdAvailable(result);
   };
   
-    const submitClick = () => {
-      navigation.goBack();
-  
-      // navigation.navigate('Main', {uid: 1}); // code for skip
-      // return; // code for skip
-      /*
-      console.log("Sending signup request");
-      fetch(constant.BASEURL + 'join/signup', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: idText,
-          password: pwText
-        })
-      })
-      .then((response) => {
-        // console.log("response");
-        console.log(response);
-        if (response.status == 200){
-          console.log("Go Next Page");
-          return response.json();
-        }  
-        else {
-          console.log(response.status);
-        }
-      })
-      .then((data) => {
-      //   navigation.navigate('Main', {uid: data.uid});
-        navigation.goBack();
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-      */
+  const signUpRequest = () => {
+    console.log("Sending signup request");
+    let result = requestSignUp(idText, pwText, '11', '010-1234-5678', 'mmm@gmail.com'); // When doing signUp, put variables id, pw, name, phonenumber, email.
+    result ? navigation.goBack() : console.log("sign up request falied");
   };
   
   return (
@@ -187,7 +127,7 @@ function SignUp({ navigation }) {
             {/* 1-2. 중복 확인 BUTTON */}
             <FlatButton
               text="중복 확인"
-              onPress={checkId}
+              onPress={checkIdRequest}
               style={{ width: 100 }}
             />
           </View>
@@ -266,7 +206,7 @@ function SignUp({ navigation }) {
           {/* 7. SIGN UP BUTTON */}
           <FlatButton
             text="SIGN UP"
-            onPress={submitClick}
+            onPress={signUpRequest}
             style={{ width: constant.SCREEN_WIDTH * 0.45, marginTop: 24, zIndex: 52 }}
           />
         </View>
