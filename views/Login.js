@@ -4,7 +4,7 @@ import FlatButton from '../components/FlatButton';
 import FlatTextInput from '../components/FlatTextInput';
 import FlatHiddenTouchable from '../components/FlatHiddenTouchable';
 
-import React from 'react';
+import React, { useState } from 'react';
 import type { Node } from 'react';
 import {
   SafeAreaView,
@@ -24,17 +24,12 @@ function Login({ navigation }) {
   const nTheme = isDarkMode ? theme.darkTheme : theme.lightTheme;
   const nStyles = createStyles(nTheme);
 
-  const [idText, onChangeIdText] = React.useState('');
-  const [pwText, onChangePwText] = React.useState('');
+  const [idText, onChangeIdText] = useState('');
+  const [pwText, onChangePwText] = useState('');
 
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
-  };
+  const dismissKeyboard = () => Keyboard.dismiss();
 
   const submitClick = () => {
-    // navigation.navigate('Main', {uid: 1}); // code for skip
-    // return; // code for skip
-
     console.log("Sending signup request");
     fetch(constant.BASEURL + 'join/login', {
       method: 'POST',

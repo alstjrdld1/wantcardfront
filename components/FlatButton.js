@@ -1,6 +1,6 @@
 import theme from '../Themes';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -8,23 +8,24 @@ import {
   useColorScheme,
 } from 'react-native';
 
-function FlatButton({ text, onPress, style }) {
+function FlatButton({ text, onPress, style, disabled = false }) {
   const isDarkMode = useColorScheme() === "dark";
   const nTheme = isDarkMode ? theme.darkTheme : theme.lightTheme;
-  const nStyles = createStyles(nTheme);
+  const nStyles = createStyles(nTheme, disabled);
 
   return (
     <TouchableOpacity
       onPress={onPress}
       style={{ ...nStyles.button, ...style }}
       activeOpacity={0.6}
+      disabled={disabled}
     >
       <Text style={nStyles.buttonText}>{text}</Text>
     </TouchableOpacity>
   );
 }
 
-const createStyles = (nTheme) =>
+const createStyles = (nTheme, disabled) =>
   StyleSheet.create({
     button: {
       alignItems: 'center',
@@ -34,7 +35,7 @@ const createStyles = (nTheme) =>
       backgroundColor: nTheme.mainColor,
     },
     buttonText: {
-      color: nTheme.mainTextColor,
+      color: disabled ? nTheme.mainTextColorDisabled : nTheme.mainTextColor,
       fontSize: 16,
     },
   });

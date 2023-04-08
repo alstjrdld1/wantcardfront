@@ -4,9 +4,9 @@ import FlatButton from '../components/FlatButton';
 import FlatTextInput from '../components/FlatTextInput';
 import FlatHiddenTouchable from '../components/FlatHiddenTouchable';
 import { generateRandomNumber } from '../utils/generate';
-import { requestSignUp, requestCheckId } from './SignUpAPI';
+import { requestCheckId, requestSignUp } from './SignUpAPI';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Node } from 'react';
 import {
   SafeAreaView,
@@ -26,90 +26,93 @@ function SignUp({ navigation }) {
   const nTheme = isDarkMode ? theme.darkTheme : theme.lightTheme;
   const nStyles = createStyles(nTheme);
 
-  const [idText, onChangeIdText] = React.useState('');
-  const [idAvailable, onChangeIdAvailable] = React.useState('needCheck');
+  const dismissKeyboard = () => Keyboard.dismiss();
 
-  const [pwText, onChangePwText] = React.useState('');
-  const [pwText2, onChangePwText2] = React.useState('');
-  const [pwVerified, onChangePwVerified] = React.useState('needCheck');
+  // 1. 아이디 입력 및 중복 확인
 
-  const [nameText, onChangeNameText] = React.useState('');
+  const [idText, onChangeIdText] = useState('');
+  const [idAvailable, onChangeIdAvailable] = useState('needCheck');
 
-  const [phoneNumberText, onChangePhoneNumberText] = React.useState('');
-  const [phoneNumberEditable, onChangePhoneNumberEditable] = React.useState(true);
+  useEffect(() => {
+    onChangeIdAvailable('needCheck');
+  }, [idText]);
 
-  const [generatedVerifyNumber, onGenerateNumber] = React.useState('');
-  const [enteredVerifyNumber, onChangeVerifyNumber] = React.useState('');
-  const [verifyNumberEditable, onChangeVerifyEditable] = React.useState(true);
-
-  const [emailText, onChangeEmailText] = React.useState('');
-
-  // Check variables for sign up query submission
-  const [isVerified, onChangeVerifiedState] = React.useState(false);
-
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
-  };
-
-  const handleChangeIdText = (id) => {
-    onChangeIdText(id);
-    onChangeIdAvailable('needCheck')
-  };
-
-  const handleChangePwText = (pw) => {
-    onChangePwText(pw);
-    onChangePwVerified(pwText === pwText2 ? 'good' : 'bad');
-  };
-
-  const handleChangePwText2 = (pw2) => {
-    onChangePwText2(pw2);
-    onChangePwVerified(pwText === pwText2 ? 'good' : 'bad');
-  };
-
-  // ABOUT VERIFY 
-  const sendVerifyNumber = () => {
-    let num = generateRandomNumber();
-    console.log(num);
-    onGenerateNumber(num);
-    onChangeVerifyNumber('');
-  }
-
-  const checkVerifyNumber = () => {
-    if(generatedVerifyNumber != ''){
-      if(Number(generatedVerifyNumber) == Number(enteredVerifyNumber)){
-        onChangeVerifiedState(true);
-        onChangePhoneNumberEditable(false);
-        onChangeVerifyEditable(false);
-        console.log("Correct");
-      }
-      else{
-        console.log(generatedVerifyNumber);
-        console.log("Something Wrong");
-      }
-    }
-    else{
-      console.log("Please Generate VerifyNumber");
-    }
-  }
-
-  const handleVerifyNumberChange = (value) => {
-    const regex = /^[0-9]{0,6}$/;
-    if (regex.test(value)) {
-      onChangeVerifyNumber(value);
-    }
-  };
-  
   const onSubmitCheckId = async () => {
-    console.log("ID Check Reuqest");
+    console.log("Sending CheckId Request");
     const result = await requestCheckId(idText);
     onChangeIdAvailable(result ? 'good' : 'bad');
-    console.log("onSubmitCheckId", result);
   };
 
+  // 2. 비밀번호 입력 및 확인
+
+  const [pwText, onChangePwText] = useState('');
+  const [pwText2, onChangePwText2] = useState('');
+  const [pwVerified, onChangePwVerified] = useState('needCheck');
+
+  useEffect(() => {
+    onChangePwVerified((pwText === '' || pwText2 === '') ? 'needCheck' : (pwText === pwText2 ? 'good' : 'bad'));
+  }, [pwText, pwText2]);
+
+  // 3. 이름 입력
+
+  const [nameText, onChangeNameText] = useState('');
+
+  // 4. 전화번호 입력 및 인증
+
+  const [phoneNumberText, onChangePhoneNumberText] = useState('');
+  const [phoneNumberEditable, onChangePhoneNumberEditable] = useState(true);
+
+  const [verifyCode, onChangeVerifyCode] = useState('');
+  const [verifyCodeInput, onChangeVerifyCodeInput] = useState('');
+  const [verifyCodeEditable, onChangeVerifyCodeEditable] = useState(true);
+
+  // Check variables for sign up query submission
+  const [isVerified, onChangeVerifiedState] = useState(false);
+
+  // ABOUT VERIFY 
+  const sendVerifyCode = () => {
+    let num = generateRandomNumber();
+    console.log(num);
+    onChangeVerifyCode(num);
+    onChangeVerifyCodeInput('');
+  };
+
+  const checkVerifyCode = () => {
+    if (verifyCode !== '') {
+      if (Number(verifyCode) === Number(verifyCodeInput)){
+        onChangeVerifiedState(true);
+        onChangePhoneNumberEditable(false);
+        onChangeVerifyCodeEditable(false);
+        console.log("Correct");
+      }
+      else {
+        console.log(verifyCode);
+        console.log("Something Wrong");
+        onChangeVerifyCodeInput(''); // 입력 초기화
+      }
+    }
+    else {
+      console.log("Please Generate VerifyNumber");
+    }
+  };
+
+  const handleVerifyCodeInput = (value) => {
+    const regex = /^[0-9]{0,6}$/;
+    if (regex.test(value)) {
+      onChangeVerifyCodeInput(value);
+    }
+  };
+
+  // 5. 이메일 입력
+
+  const [emailText, onChangeEmailText] = useState('');
+
+  // 6. 회원가입 버튼
+
   const onSubmitSignUp = async () => {
-    console.log("Sending signup request");
+    console.log("Sending SignUp Request");
     const result = await requestSignUp(idText, pwText, '11', '010-1234-5678', 'mmm@gmail.com'); // When doing signUp, put variables id, pw, name, phonenumber, email.
-    result ? navigation.goBack() : console.log("sign up request falied");
+    result ? navigation.goBack() : console.log("SignUp request failed");
   };
 
   return (
@@ -131,16 +134,14 @@ function SignUp({ navigation }) {
         <View style={nStyles.contents}>
           <FlatHiddenTouchable onPress={dismissKeyboard} style={{ ...nStyles.dismissKeyboard, zIndex: 51 }} />
 
+          {/* 1. 아이디 입력 및 중복 확인 */}
           <View style={{ flexDirection: 'row', width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}>
-            {/* 1-1. ID INPUT AREA */}
             <FlatTextInput
               value={idText}
-              onChangeText={handleChangeIdText}
+              onChangeText={onChangeIdText}
               placeholder="아이디"
               style={{ flex: 1, marginRight: 12 }}
             />
-
-            {/* 1-2. 중복 확인 BUTTON */}
             <FlatButton
               text="중복 확인"
               onPress={onSubmitCheckId}
@@ -148,6 +149,7 @@ function SignUp({ navigation }) {
             />
           </View>
 
+          {/* 사용 가능한 아이디입니다 메시지 출력 */}
           {idAvailable === "needCheck" ?
             <View />
             :
@@ -164,22 +166,38 @@ function SignUp({ navigation }) {
             </View>
           }
 
-          {/* 2. PW INPUT AREA */}
+          {/* 2. 비밀번호 입력 및 확인 */}
           <FlatTextInput
             value={pwText}
-            onChangeText={handleChangePwText}
+            onChangeText={onChangePwText}
             placeholder="비밀번호"
             style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
           />
-
           <FlatTextInput
             value={pwText2}
-            onChangeText={handleChangePwText2}
+            onChangeText={onChangePwText2}
             placeholder="비밀번호 확인"
             style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
           />
 
-          {/* 3. NAME INPUT AREA */}
+          {/* 비밀번호가 일치하지 않습니다 메시지 출력 */}
+          {pwVerified === "needCheck" ?
+            <View />
+            :
+            <View style={{ marginBottom: 12 }}>
+              {pwVerified === "good" ?
+                <Text style={{ color: "green" }}>
+                  비밀번호가 일치합니다.
+                </Text>
+                :
+                <Text style={{ color: "red" }}>
+                  비밀번호가 일치하지 않습니다.
+                </Text>
+              }
+            </View>
+          }
+
+          {/* 3. 이름 입력 */}
           <FlatTextInput
             value={nameText}
             onChangeText={onChangeNameText}
@@ -187,8 +205,8 @@ function SignUp({ navigation }) {
             style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
           />
 
+          {/* 4. 전화번호 입력 및 인증 */}
           <View style={{ flexDirection: 'row', width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}>
-            {/* 4-1. PHONE NUMBER INPUT AREA */}
             <FlatTextInput
               value={phoneNumberText}
               onChangeText={onChangePhoneNumberText}
@@ -196,35 +214,33 @@ function SignUp({ navigation }) {
               style={{ flex: 1, marginRight: 12 }}
               editable={phoneNumberEditable}
             />
-
-            {/* 4-2. 인증번호 전송 BUTTON */}
             <FlatButton
               text="인증번호 전송"
-              onPress={sendVerifyNumber}
-              style={{ width: 100 }}
+              onPress={sendVerifyCode}
+              style={{ width: 116 }}
+              disabled={!phoneNumberEditable}
             />
           </View>
 
           <View style={{ flexDirection: 'row', width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}>
-            {/* 5-1. 인증번호 INPUT AREA 여기에 번호만 입력하는 부분 어떻게 할지..*/}  
+            {/* 인증번호 INPUT AREA 여기에 번호만 입력하는 부분 어떻게 할지.. */}
             <FlatTextInput
-              value={enteredVerifyNumber}
-              onChangeText={handleVerifyNumberChange}
+              value={verifyCodeInput}
+              onChangeText={handleVerifyCodeInput}
               placeholder= "인증번호"
               style={{ flex: 1, marginRight: 12 }}
-              editable={verifyNumberEditable}
+              editable={verifyCodeEditable}
               keyboardType='numeric'
             />
-
-            {/* 5-2. 인증번호 BUTTON */}
             <FlatButton
               text="인증 확인"
-              onPress={checkVerifyNumber}
+              onPress={checkVerifyCode}
               style={{ width: 116 }}
+              disabled={!verifyCodeEditable}
             />
           </View>
 
-          {/* 6. EMAIL INPUT AREA */}
+          {/* 5. 이메일 입력 */}
           <FlatTextInput
             value={emailText}
             onChangeText={onChangeEmailText}
@@ -232,7 +248,7 @@ function SignUp({ navigation }) {
             style={{ width: constant.SCREEN_WIDTH * 0.9, marginBottom: 12, zIndex: 52 }}
           />
 
-          {/* 7. SIGN UP BUTTON */}
+          {/* 6. 회원가입 버튼 */}
           <FlatButton
             text="회원가입"
             onPress={onSubmitSignUp}

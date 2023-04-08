@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   TextInput,
   StyleSheet,
 } from 'react-native';
 
-function FlatTextInput({ value, onChangeText, placeholder, style, editable=true}) {
+function FlatTextInput({ value, onChangeText, placeholder, style, editable = true}) {
+  const nStyles = createStyles(editable);
+
   return (
     <TextInput
       value={value}
@@ -12,13 +14,13 @@ function FlatTextInput({ value, onChangeText, placeholder, style, editable=true}
       placeholder={placeholder}
       placeholderTextColor={'#999'}
       autoCapitalize='none'
-      style={{ ...styles.input, ...style }}
+      style={{ ...nStyles.input, ...style }}
       editable={editable}
     />
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (editable) => StyleSheet.create({
   input: {
     height: 50,
     paddingHorizontal: 22,
@@ -26,8 +28,8 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     borderWidth: 1,
     borderColor: '#012',
-    backgroundColor: '#fff',
-    color: '#000',
+    backgroundColor: editable ? '#fff' : '#ddd',
+    color: editable ? '#000' : '#999',
     fontSize: 16,
   },
 });
